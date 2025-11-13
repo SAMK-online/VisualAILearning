@@ -17,6 +17,8 @@ from app.models import (
     VisualizationResponse,
     ErrorResponse,
     HealthResponse,
+    ResumeParseRequest,
+    PortfolioDataResponse,
 )
 from app.ai_service import get_ai_service
 

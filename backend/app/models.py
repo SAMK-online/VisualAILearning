@@ -96,3 +96,52 @@ class HealthResponse(BaseModel):
     status: str = Field(default="healthy")
     version: str = Field(default="1.0.0")
     ai_provider: str = Field(..., description="Currently configured AI provider")
+
+
+# Portfolio Architect Models
+class ResumeParseRequest(BaseModel):
+    """Request model for parsing resume"""
+    
+    base64Data: str = Field(..., description="Base64 encoded resume file")
+    mimeType: str = Field(..., description="MIME type of the file")
+
+
+class PortfolioLink(BaseModel):
+    """Portfolio social link"""
+    
+    name: str = Field(..., description="Link name (e.g., GitHub, LinkedIn)")
+    url: str = Field(..., description="URL of the link")
+
+
+class PortfolioExperience(BaseModel):
+    """Portfolio work experience"""
+    
+    role: str = Field(..., description="Job role/title")
+    company: str = Field(..., description="Company name")
+    startDate: str = Field(..., description="Start date (e.g., 'June 2020')")
+    endDate: str = Field(..., description="End date or 'Present'")
+    description: str = Field(..., description="Job description and achievements")
+
+
+class PortfolioProject(BaseModel):
+    """Portfolio project"""
+    
+    name: str = Field(..., description="Project name")
+    description: str = Field(..., description="Project description")
+    technologies: List[str] = Field(..., description="Technologies used")
+    demoUrl: Optional[str] = Field(None, description="Live demo URL")
+    sourceUrl: Optional[str] = Field(None, description="Source code URL")
+
+
+class PortfolioDataResponse(BaseModel):
+    """Response model for parsed portfolio data"""
+    
+    name: str = Field(..., description="Candidate's full name")
+    title: str = Field(..., description="Professional title")
+    summary: str = Field(..., description="Professional summary")
+    email: str = Field(..., description="Email address")
+    imageUrl: Optional[str] = Field(None, description="Profile picture URL")
+    links: List[PortfolioLink] = Field(..., description="Social/professional links")
+    skills: List[str] = Field(..., description="Technical skills")
+    experience: List[PortfolioExperience] = Field(..., description="Work experience")
+    projects: List[PortfolioProject] = Field(..., description="Projects")
