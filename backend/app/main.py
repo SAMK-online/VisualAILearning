@@ -325,6 +325,71 @@ async def chatbot(request: Request, body: dict):
         }
 
 
+@app.post("/api/parse-resume", response_model=PortfolioDataResponse)
+@limiter.limit(f"{settings.max_requests_per_minute}/minute")
+async def parse_resume(request: Request, data: ResumeParseRequest):
+    """
+    Parse resume using Google Gemini API
+    
+    Extracts portfolio data from resume file
+    """
+    try:
+        import google.generativeai as genai
+        import json
+        
+        # Configure Gemini
+        if not settings.gemini_api_key:
+            raise HTTPException(
+                status_code=500,
+                detail="Gemini API key not configured"
+            )
+        
+        genai.configure(api_key=settings.gemini_api_key)
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        
+        # Prompt for resume parsing
+        prompt = """You are an expert resume parser. Analyze the following resume file and extract the information into JSON format. Be accurate and complete. 
+
+Extract:
+- name: Full name
+- title: Professional title
+- summary: Professional summary/objective
+- email: Email address
+- imageUrl: Profile picture URL if available, otherwise use a placeholder like 'https://picsum.photos/seed/portfolio/400/400'
+- links: Array of {name, url} for GitHub, LinkedIn, etc.
+- skills: Array of technical skills
+- experience: Array of {role, company, startDate, endDate, description}
+- projects: Array of {name, description, technologies, demoUrl, sourceUrl}
+
+Return ONLY valid JSON, no additional text."""
+        
+        # Call Gemini API
+        response = model.generate_content([
+            prompt,
+            {"mime_type": data.mimeType, "data": data.base64Data}
+        ])
+        
+        # Parse response
+        json_text = response.text.strip()
+        # Remove markdown code blocks if present
+        if json_text.startswith("```"):
+            json_text = json_text.split("```")[1]
+            if json_text.startswith("json"):
+                json_text = json_text[4:]
+            json_text = json_text.strip()
+        
+        portfolio_data = json.loads(json_text)
+        
+        return PortfolioDataResponse(**portfolio_data)
+        
+    except Exception as e:
+        logger.error(f"Resume parsing error: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to parse resume: {str(e)}"
+        )
+
+
 if __name__ == "__main__":
     import uvicorn
 

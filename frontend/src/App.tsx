@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { NewLandingPage } from "./components/NewLandingPage";
 import { VisualizationViewer } from "./components/VisualizationViewer";
+import PortfolioArchitect from "./components/PortfolioArchitect";
 import { generateVisualization } from "./services/api";
 import type { VisualizationData } from "./types/visualization";
 
-type AppState = "landing" | "viewing";
+type AppState = "landing" | "viewing" | "portfolio-architect";
 
 function App() {
   const [state, setState] = useState<AppState>("landing");
@@ -38,14 +39,21 @@ function App() {
     setError(null);
   };
 
+  const handleOpenPortfolioArchitect = () => {
+    setState("portfolio-architect");
+  };
+
   return (
     <div className="App">
       {state === "landing" ? (
         <NewLandingPage
           onGenerateVisualization={handleGenerateVisualization}
+          onOpenPortfolioArchitect={handleOpenPortfolioArchitect}
           isLoading={isLoading}
           error={error}
         />
+      ) : state === "portfolio-architect" ? (
+        <PortfolioArchitect />
       ) : visualizationData ? (
         <VisualizationViewer
           data={visualizationData}

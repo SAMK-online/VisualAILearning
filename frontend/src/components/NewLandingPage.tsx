@@ -5,12 +5,14 @@ import { cn } from "../lib/utils";
 
 interface NewLandingPageProps {
   onGenerateVisualization: (topic: string) => void;
+  onOpenPortfolioArchitect: () => void;
   isLoading: boolean;
   error: string | null;
 }
 
 export function NewLandingPage({
   onGenerateVisualization,
+  onOpenPortfolioArchitect,
   isLoading,
   error,
 }: NewLandingPageProps) {
@@ -54,12 +56,12 @@ export function NewLandingPage({
             >
               Visual Learning
             </a>
-            <a
-              className="text-white/80 hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="#"
+            <button
+              onClick={onOpenPortfolioArchitect}
+              className="text-white/80 hover:text-white transition-colors text-sm font-medium leading-normal cursor-pointer"
             >
               Portfolio Architect
-            </a>
+            </button>
           </div>
         </div>
       </header>

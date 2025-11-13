@@ -8,6 +8,7 @@ import type {
   ExamplesResponse,
   ErrorResponse,
 } from "../types/visualization";
+import type { PortfolioData } from "../types/portfolio";
 
 // Configure base URL - defaults to localhost:8000 in development
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -97,6 +98,31 @@ export async function healthCheck(): Promise<boolean> {
     return response.status === 200;
   } catch (error) {
     return false;
+  }
+}
+
+/**
+ * Parse resume using Gemini API
+ */
+export async function parseResume(
+  base64Data: string,
+  mimeType: string
+): Promise<PortfolioData> {
+  try {
+    const response = await api.post<PortfolioData>("/api/parse-resume", {
+      base64Data,
+      mimeType,
+    });
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data as ErrorResponse | undefined;
+      throw new Error(
+        errorData?.error || "Failed to parse resume. Please try a different file."
+      );
+    }
+    throw error;
   }
 }
 
