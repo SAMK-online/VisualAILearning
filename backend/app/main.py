@@ -132,35 +132,9 @@ async def generate_visualization(request: Request, body: VisualizationRequest):
     interactive elements.
 
     Rate limit: 10 requests per minute per IP address
-    
-    Special case: For BST (Binary Search Tree) topics, returns a redirect to the 
-    interactive demo page.
     """
     try:
         logger.info(f"Received visualization request for topic: {body.topic}")
-
-        # Check if topic is related to Binary Search Tree (for demo purposes)
-        topic_lower = body.topic.lower()
-        bst_keywords = ["binary search tree", "bst", "binary tree"]
-        
-        if any(keyword in topic_lower for keyword in bst_keywords):
-            logger.info(f"BST topic detected, returning demo redirect")
-            # Return a special response that tells the frontend to redirect
-            return VisualizationResponse(
-                success=True,
-                topic=body.topic,
-                title="Binary Search Tree - Interactive Demo",
-                description="Redirecting to interactive BST visualizer with full traversal animations...",
-                visualization_type="tree",
-                components=[],
-                steps=[],
-                interactive_elements=[],
-                metadata={
-                    "demo_redirect": True,
-                    "demo_url": "/api/bst-demo",
-                    "message": "This is a special interactive demo for BST visualization"
-                }
-            )
 
         # Get AI service
         ai_service = get_ai_service()
@@ -192,57 +166,67 @@ async def generate_visualization(request: Request, body: VisualizationRequest):
 
 @app.get("/api/examples", response_model=dict)
 async def get_examples():
-    """Get example topics for inspiration"""
+    """Get example topics for software engineering and computer science learning"""
     return {
         "examples": [
             {
-                "category": "Computer Science",
+                "category": "Data Structures",
                 "topics": [
                     "Binary Search Tree",
+                    "Hash Tables",
+                    "Linked Lists",
+                    "Stack and Queue",
+                    "AVL Trees",
+                ],
+            },
+            {
+                "category": "Algorithms",
+                "topics": [
                     "Merge Sort Algorithm",
-                    "How Hash Tables Work",
+                    "Quick Sort Algorithm",
                     "Depth-First Search",
+                    "Breadth-First Search",
+                    "Dijkstra's Algorithm",
+                ],
+            },
+            {
+                "category": "System Design",
+                "topics": [
+                    "Load Balancer Architecture",
+                    "Database Sharding",
+                    "Microservices Pattern",
+                    "Caching Strategy (Redis)",
+                    "Message Queue (Kafka)",
+                ],
+            },
+            {
+                "category": "Programming Concepts",
+                "topics": [
+                    "Object-Oriented Programming",
+                    "Recursion vs Iteration",
+                    "Big O Notation",
+                    "Dynamic Programming",
+                    "Memory Management",
+                ],
+            },
+            {
+                "category": "Web & Networks",
+                "topics": [
+                    "How DNS Works",
+                    "HTTP Request Lifecycle",
+                    "TCP/IP Protocol Stack",
+                    "RESTful API Design",
+                    "WebSocket Communication",
+                ],
+            },
+            {
+                "category": "AI & ML",
+                "topics": [
                     "Neural Network Architecture",
-                ],
-            },
-            {
-                "category": "Biology",
-                "topics": [
-                    "How Photosynthesis Works",
-                    "Cell Division (Mitosis)",
-                    "DNA Replication",
-                    "Food Chain Ecosystem",
-                    "Human Digestive System",
-                ],
-            },
-            {
-                "category": "Physics",
-                "topics": [
-                    "Newton's Laws of Motion",
-                    "Electric Circuit Flow",
-                    "Wave Interference",
-                    "Planetary Orbits",
-                    "How Lenses Focus Light",
-                ],
-            },
-            {
-                "category": "Mathematics",
-                "topics": [
-                    "Pythagorean Theorem",
-                    "Fibonacci Sequence",
-                    "Prime Number Sieve",
-                    "Quadratic Equation Solutions",
-                    "Calculus: Area Under Curve",
-                ],
-            },
-            {
-                "category": "History",
-                "topics": [
-                    "Timeline of World War II",
-                    "Rise and Fall of Roman Empire",
-                    "Industrial Revolution Timeline",
-                    "Renaissance Art Movement",
-                    "Space Race Timeline",
+                    "Convolutional Neural Networks",
+                    "Decision Trees",
+                    "K-Means Clustering",
+                    "Gradient Descent",
                 ],
             },
         ]
@@ -294,9 +278,10 @@ async def chatbot(request: Request, body: dict):
         ai_service = get_ai_service()
 
         # Create a prompt for the chatbot
-        system_prompt = """You are a helpful teaching assistant specializing in computer science,
-        data structures, and algorithms. Provide clear, concise, educational answers.
-        Use bullet points and examples when helpful. Keep responses under 200 words."""
+        system_prompt = """You are a helpful teaching assistant specializing in software engineering,
+        computer science, data structures, algorithms, system design, and programming concepts.
+        Provide clear, concise, educational answers. Use bullet points and examples when helpful.
+        Keep responses under 200 words."""
 
         context_info = f"The user is currently viewing a {context.get('tree_type', 'tree')} " \
                       f"with {context.get('traversal', 'standard')} traversal." if context else ""

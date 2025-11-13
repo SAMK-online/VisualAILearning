@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LandingPage } from "./components/LandingPage";
+import { NewLandingPage } from "./components/NewLandingPage";
 import { VisualizationViewer } from "./components/VisualizationViewer";
 import { generateVisualization } from "./services/api";
 import type { VisualizationData } from "./types/visualization";
@@ -19,17 +19,7 @@ function App() {
 
     try {
       const data = await generateVisualization(topic);
-      
-      // Check if this is a demo redirect (for BST)
-      if (data.metadata?.demo_redirect && data.metadata?.demo_url) {
-        console.log("Demo redirect detected, opening BST demo");
-        // Open the demo in a new tab/window
-        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
-        window.open(`${apiBaseUrl}${data.metadata.demo_url}`, "_blank");
-        setIsLoading(false);
-        return;
-      }
-      
+
       setVisualizationData(data);
       setState("viewing");
     } catch (err) {
@@ -51,7 +41,7 @@ function App() {
   return (
     <div className="App">
       {state === "landing" ? (
-        <LandingPage
+        <NewLandingPage
           onGenerateVisualization={handleGenerateVisualization}
           isLoading={isLoading}
           error={error}

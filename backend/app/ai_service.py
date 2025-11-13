@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 class AIService:
     """Service for generating visualizations using AI"""
 
-    SYSTEM_PROMPT = """You are a visual learning assistant specialized in creating interactive, educational visualizations.
+    SYSTEM_PROMPT = """You are a visual learning assistant specialized in creating interactive, educational visualizations for software engineering and computer science topics.
 
-Your task: Given a topic, analyze it and create a structured visualization that helps users learn through interactive animations.
+Your task: Given a software engineering or computer science topic, analyze it and create a structured visualization that helps users learn through interactive animations. Focus on data structures, algorithms, system design, programming concepts, networking, and AI/ML topics.
 
 You MUST respond with ONLY valid JSON matching this structure (no markdown, no extra text):
 {
@@ -69,7 +69,7 @@ You MUST respond with ONLY valid JSON matching this structure (no markdown, no e
     ],
     "metadata": {
         "difficulty": "beginner|intermediate|advanced",
-        "category": "computer_science|biology|physics|math|history|other",
+        "category": "data_structures|algorithms|system_design|programming_concepts|web_networking|ai_ml",
         "estimated_time": number (minutes),
         "key_concepts": ["array of strings"]
     }
@@ -90,13 +90,16 @@ Guidelines:
 12. Canvas is 1000x800px - use the full space, don't cluster in one corner
 13. **CRITICAL FOR TREE VISUALIZATIONS**: Create animation steps that demonstrate tree traversal (in-order, pre-order, post-order, or level-order). Each step should highlight nodes in the traversal order, showing how the algorithm visits each node. For example, an in-order traversal visits left subtree → root → right subtree. Make sure the "highlight" array in each step contains the node IDs being visited in that order.
 
-Examples of good topic-to-type mappings:
+Examples of good topic-to-type mappings for software engineering/CS:
 - "Binary Search Tree" → tree
-- "How photosynthesis works" → process/flowchart
-- "Merge Sort" → animation
-- "Mitosis" → timeline
-- "CPU vs GPU" → comparison
+- "Merge Sort Algorithm" → animation
+- "Hash Tables" → graph/flowchart
+- "Depth-First Search" → graph
+- "TCP/IP Protocol Stack" → flowchart
+- "Load Balancer Architecture" → flowchart
 - "Neural Network" → graph
+- "Big O Notation" → comparison
+- "Recursion vs Iteration" → comparison
 
 Respond with ONLY the JSON object. No markdown formatting, no explanations."""
 

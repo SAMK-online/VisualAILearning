@@ -7,6 +7,7 @@ import {
   Search,
   Loader2,
   AlertCircle,
+  Briefcase,
 } from "lucide-react";
 import { getExamples } from "../services/api";
 import type { Example } from "../types/visualization";
@@ -68,12 +69,33 @@ export function LandingPage({
             </h1>
           </div>
           <p className="text-xl md:text-2xl text-white font-semibold max-w-3xl mx-auto">
-            Learn Anything Visually - Powered by AI
+            Master Software Engineering Visually - Powered by AI
           </p>
           <p className="text-[#A0A0A0] mt-4 max-w-2xl mx-auto text-lg">
-            Transform complex topics into interactive visualizations and
-            animations that make learning intuitive and fun.
+            Transform complex CS concepts, algorithms, and system designs into interactive visualizations
+            that make learning intuitive and engaging.
           </p>
+
+          {/* Portfolio Architect Button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-8"
+          >
+            <a
+              href="https://portfolio-architect-ai.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#4A90E2] to-[#357ABD] text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+            >
+              <Briefcase className="w-6 h-6" />
+              Create Your Portfolio with AI
+            </a>
+            <p className="text-[#A0A0A0] text-sm mt-3">
+              Upload your resume and get a stunning portfolio website in seconds
+            </p>
+          </motion.div>
         </motion.div>
 
         {/* Features */}
@@ -125,7 +147,7 @@ export function LandingPage({
                   type="text"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  placeholder="e.g., Binary Search Tree, How photosynthesis works..."
+                  placeholder="e.g., Binary Search Tree, Merge Sort, Load Balancer, TCP/IP Stack..."
                   className="w-full px-4 py-3 pl-12 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#4A90E2]/50 focus:border-[#4A90E2] text-lg text-gray-900 placeholder-gray-500"
                   disabled={isLoading}
                 />
