@@ -6,6 +6,7 @@ import { generateVisualization } from "./services/api";
 import type { VisualizationData } from "./types/visualization";
 
 type AppState = "landing" | "viewing" | "portfolio-architect";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function App() {
   const [state, setState] = useState<AppState>("landing");
@@ -20,6 +21,18 @@ function App() {
 
     try {
       const data = await generateVisualization(topic);
+
+      const demoUrl = data.metadata?.demo_url;
+      const shouldRedirectToDemo =
+        data.metadata?.demo_redirect && typeof demoUrl === "string" && demoUrl.length > 0;
+
+      if (shouldRedirectToDemo) {
+        const targetUrl = demoUrl.startsWith("http")
+          ? demoUrl
+          : `${API_BASE_URL}${demoUrl}`;
+        window.open(targetUrl, "_blank", "noopener,noreferrer");
+        return;
+      }
 
       setVisualizationData(data);
       setState("viewing");

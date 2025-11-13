@@ -138,6 +138,27 @@ async def generate_visualization(request: Request, body: VisualizationRequest):
     try:
         logger.info(f"Received visualization request for topic: {body.topic}")
 
+        # Special-case Binary Search Tree topics to open the interactive demo
+        topic_lower = body.topic.strip().lower()
+        bst_keywords = ["binary search tree", "bst", "binary tree"]
+        if any(keyword in topic_lower for keyword in bst_keywords):
+            logger.info("BST topic detected, returning interactive demo redirect metadata")
+            return VisualizationResponse(
+                success=True,
+                topic=body.topic,
+                title="Binary Search Tree - Interactive Demo",
+                description="Redirecting to interactive BST visualizer...",
+                visualization_type="tree",
+                components=[],
+                steps=[],
+                interactive_elements=[],
+                metadata={
+                    "demo_redirect": True,
+                    "demo_url": "/api/bst-demo",
+                    "message": "This topic opens the interactive BST demo for a richer experience.",
+                },
+            )
+
         # Get AI service
         ai_service = get_ai_service()
 
