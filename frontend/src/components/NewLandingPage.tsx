@@ -1,22 +1,18 @@
 import { motion } from "framer-motion";
 import {
   Brain,
-  Loader2,
   AlertCircle,
-  ArrowRight,
   Sparkles,
   Layers,
   LineChart,
   ShieldCheck,
   Clock3,
   BookOpen,
-  PlayCircle,
   CheckCircle2,
 } from "lucide-react";
-import { cn } from "../lib/utils";
 
 interface NewLandingPageProps {
-  onGenerateVisualization: (topic: string) => void;
+  onOpenVisualizer: () => void;
   onOpenPortfolioArchitect: () => void;
   isLoading: boolean;
   error: string | null;
@@ -65,26 +61,12 @@ const WORKFLOW_STEPS = [
   },
 ];
 
-const SAMPLE_TOPICS = [
-  "Binary Search Tree",
-  "Merge Sort Algorithm",
-  "TCP/IP Protocol Stack",
-  "Neural Network Basics",
-  "Load Balancer Architecture",
-  "Hash Table Operations",
-];
-
 export function NewLandingPage({
-  onGenerateVisualization,
+  onOpenVisualizer,
   onOpenPortfolioArchitect,
   isLoading,
   error,
 }: NewLandingPageProps) {
-  const handleQuickStart = (selectedTopic: string) => {
-    if (isLoading) return;
-    onGenerateVisualization(selectedTopic);
-  };
-
   return (
     <div className="relative flex min-h-screen w-full flex-col animated-gradient overflow-x-hidden text-white">
       <style>{`
@@ -108,10 +90,16 @@ export function NewLandingPage({
             Visual Learning
           </h2>
         </div>
-        <div className="hidden sm:flex items-center gap-8 text-sm font-medium">
-          <a className="text-white/80 hover:text-white transition-colors" href="#features">
-            Product
-          </a>
+          <div className="hidden sm:flex items-center gap-8 text-sm font-medium">
+            <button
+              onClick={onOpenVisualizer}
+              className="text-white/80 hover:text-white transition-colors cursor-pointer"
+            >
+              Visual Learner
+            </button>
+            <a className="text-white/80 hover:text-white transition-colors" href="#features">
+              Product
+            </a>
           <a className="text-white/80 hover:text-white transition-colors" href="#workflow">
             Workflow
           </a>
@@ -147,30 +135,22 @@ export function NewLandingPage({
               step-by-step animations with AI tutoring, interactive controls, and persistent notes to
               help teams, students, and candidates master technical narratives faster.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button
-                onClick={() => handleQuickStart("Binary Search Tree")}
-                disabled={isLoading}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full px-6 py-3 bg-[#1337ec] text-white font-semibold transition-transform",
-                  isLoading ? "opacity-75 cursor-not-allowed" : "hover:scale-105"
-                )}
-              >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <PlayCircle className="w-5 h-5" />
-                )}
-                Launch Demo Visualizer
-              </button>
-              <button
-                onClick={onOpenPortfolioArchitect}
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/10 border border-white/20 font-semibold hover:bg-white/20 transition-colors"
-              >
-                <Layers className="w-5 h-5" />
-                Explore Portfolio Architect
-              </button>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={onOpenVisualizer}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-[#1337ec] text-white font-semibold transition-colors hover:scale-105"
+            >
+              <Layers className="w-5 h-5" />
+              Open Visual Learner
+            </button>
+            <button
+              onClick={onOpenPortfolioArchitect}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/10 border border-white/20 font-semibold hover:bg-white/20 transition-colors"
+            >
+              <Layers className="w-5 h-5" />
+              Explore Portfolio Architect
+            </button>
+          </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
               {[
                 { label: "Topics Visualized", value: "1,200+" },
@@ -297,24 +277,23 @@ export function NewLandingPage({
               </p>
               <h2 className="text-3xl font-bold">Pick a topic and we will craft the lesson</h2>
               <p className="text-white/70 max-w-2xl">
-                Choose a concept below to see how our visualization engine adapts to algorithms,
-                system design, networking, and AI topics.
+                Choose a concept below once you enter the Visual Learner workspace.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {SAMPLE_TOPICS.map((sample) => (
-                <button
-                  key={sample}
-                  onClick={() => handleQuickStart(sample)}
-                  disabled={isLoading}
-                  className={cn(
-                    "w-full text-left rounded-2xl border border-white/15 bg-white/5 px-5 py-4 flex items-center justify-between",
-                    isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-white/10"
-                  )}
+              {[
+                ["Data Structures", "Binary Search Tree, AVL Tree, Hash Tables"],
+                ["Algorithms", "Merge Sort, Dijkstra, Dynamic Programming"],
+                ["Systems", "Load Balancers, Caching Layers, Queueing"],
+                ["AI & ML", "Neural Networks, Transformers, Vector DBs"],
+              ].map(([title, description]) => (
+                <div
+                  key={title}
+                  className="rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-left"
                 >
-                  <span className="font-semibold">{sample}</span>
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+                  <p className="font-semibold">{title}</p>
+                  <p className="text-sm text-white/70 mt-1">{description}</p>
+                </div>
               ))}
             </div>
 
@@ -330,8 +309,7 @@ export function NewLandingPage({
 
             {isLoading && (
               <p className="text-center text-sm text-white/70">
-                <Loader2 className="inline w-4 h-4 mr-2 animate-spin" />
-                Generating your visualization experience...
+                Preparing Visual Learner workspace...
               </p>
             )}
           </section>

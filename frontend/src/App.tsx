@@ -2,10 +2,11 @@ import { useState } from "react";
 import { NewLandingPage } from "./components/NewLandingPage";
 import { VisualizationViewer } from "./components/VisualizationViewer";
 import PortfolioArchitect from "./components/PortfolioArchitect";
+import { VisualizerLanding } from "./components/VisualizerLanding";
 import { generateVisualization } from "./services/api";
 import type { VisualizationData } from "./types/visualization";
 
-type AppState = "landing" | "viewing" | "portfolio-architect";
+type AppState = "landing" | "visualizer" | "viewing" | "portfolio-architect";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function App() {
@@ -56,23 +57,36 @@ function App() {
     setState("portfolio-architect");
   };
 
+  const handleOpenVisualizer = () => {
+    setError(null);
+    setState("visualizer");
+  };
+
   return (
     <div className="App">
-      {state === "landing" ? (
+      {state === "landing" && (
         <NewLandingPage
-          onGenerateVisualization={handleGenerateVisualization}
+          onOpenVisualizer={handleOpenVisualizer}
           onOpenPortfolioArchitect={handleOpenPortfolioArchitect}
           isLoading={isLoading}
           error={error}
         />
-      ) : state === "portfolio-architect" ? (
-        <PortfolioArchitect onBack={handleBackToHome} />
-      ) : visualizationData ? (
-        <VisualizationViewer
-          data={visualizationData}
+      )}
+
+      {state === "visualizer" && (
+        <VisualizerLanding
+          onGenerateVisualization={handleGenerateVisualization}
           onBack={handleBackToHome}
+          isLoading={isLoading}
+          error={error}
         />
-      ) : null}
+      )}
+
+      {state === "portfolio-architect" && <PortfolioArchitect onBack={handleBackToHome} />}
+
+      {state === "viewing" && visualizationData && (
+        <VisualizationViewer data={visualizationData} onBack={handleBackToHome} />
+      )}
     </div>
   );
 }
