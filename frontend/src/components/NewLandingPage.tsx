@@ -1,6 +1,18 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Brain, Search, Loader2, AlertCircle } from "lucide-react";
+import {
+  Brain,
+  Loader2,
+  AlertCircle,
+  ArrowRight,
+  Sparkles,
+  Layers,
+  LineChart,
+  ShieldCheck,
+  Clock3,
+  BookOpen,
+  PlayCircle,
+  CheckCircle2,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 
 interface NewLandingPageProps {
@@ -10,23 +22,71 @@ interface NewLandingPageProps {
   error: string | null;
 }
 
+const FEATURE_CARDS = [
+  {
+    title: "Interactive Visual Storytelling",
+    description:
+      "Step-by-step animations, guided narration, and playback controls keep every learner engaged.",
+    icon: Sparkles,
+    bullets: ["Tree, graph, flow, timeline, process views", "Highlight-driven explanations"],
+  },
+  {
+    title: "AI-Crafted Content",
+    description:
+      "Purpose-built prompts for computer science topics ensure each visualization tells the right story.",
+    icon: Brain,
+    bullets: ["OpenAI GPT-4 & Anthropic Claude", "Consistent JSON schema output"],
+  },
+  {
+    title: "Learner Support System",
+    description:
+      "Integrated notes, contextual chat, and traversal explainers turn curiosity into mastery.",
+    icon: BookOpen,
+    bullets: ["Tree-focused tutor", "Downloadable notes per topic"],
+  },
+];
+
+const WORKFLOW_STEPS = [
+  {
+    title: "Describe a Topic",
+    copy: "Pick from curated examples or start with your favorite algorithm, system, or concept.",
+  },
+  {
+    title: "AI Builds the Visual",
+    copy: "The backend orchestrates prompt engineering, validation, and streaming to the client.",
+  },
+  {
+    title: "Interact & Learn",
+    copy: "Use playback, zoom, chat, and notes to explore the visualization at your pace.",
+  },
+  {
+    title: "Share or Iterate",
+    copy: "Capture notes, rerun topics, or export concepts for team demos and classrooms.",
+  },
+];
+
+const SAMPLE_TOPICS = [
+  "Binary Search Tree",
+  "Merge Sort Algorithm",
+  "TCP/IP Protocol Stack",
+  "Neural Network Basics",
+  "Load Balancer Architecture",
+  "Hash Table Operations",
+];
+
 export function NewLandingPage({
   onGenerateVisualization,
   onOpenPortfolioArchitect,
   isLoading,
   error,
 }: NewLandingPageProps) {
-  const [topic, setTopic] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (topic.trim() && !isLoading) {
-      onGenerateVisualization(topic.trim());
-    }
+  const handleQuickStart = (selectedTopic: string) => {
+    if (isLoading) return;
+    onGenerateVisualization(selectedTopic);
   };
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col animated-gradient overflow-x-hidden">
+    <div className="relative flex min-h-screen w-full flex-col animated-gradient overflow-x-hidden text-white">
       <style>{`
         .animated-gradient {
           background: linear-gradient(-45deg, #101322, #0d1b3e, #1c0f2a, #101322);
@@ -48,122 +108,238 @@ export function NewLandingPage({
             Visual Learning
           </h2>
         </div>
-        <div className="flex flex-1 justify-end gap-8">
-          <div className="hidden sm:flex items-center gap-9">
-            <a
-              className="text-white/80 hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="#visual-learning"
-            >
-              Visual Learning
-            </a>
-            <button
-              onClick={onOpenPortfolioArchitect}
-              className="text-white/80 hover:text-white transition-colors text-sm font-medium leading-normal cursor-pointer"
-            >
-              Portfolio Architect
-            </button>
-          </div>
+        <div className="hidden sm:flex items-center gap-8 text-sm font-medium">
+          <a className="text-white/80 hover:text-white transition-colors" href="#features">
+            Product
+          </a>
+          <a className="text-white/80 hover:text-white transition-colors" href="#workflow">
+            Workflow
+          </a>
+          <a className="text-white/80 hover:text-white transition-colors" href="#topics">
+            Topics
+          </a>
+          <button
+            onClick={onOpenPortfolioArchitect}
+            className="text-white/80 hover:text-white transition-colors cursor-pointer"
+          >
+            Portfolio Architect
+          </button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow flex flex-col justify-center items-center pt-20">
-        <div className="w-full max-w-6xl px-4 sm:px-10 md:px-20 lg:px-40">
+      <main className="flex-grow pt-24 pb-16">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-10 md:px-20 lg:px-32 space-y-20">
           {/* Hero Section */}
-          <motion.div
+          <motion.section
             id="visual-learning"
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex min-h-[480px] flex-col gap-6 items-center justify-center text-center py-16"
+            className="flex flex-col gap-8 text-center"
           >
-            <div className="flex flex-col gap-4 max-w-3xl">
-              <h1 className="text-white text-5xl font-black leading-tight tracking-[-0.033em] sm:text-6xl md:text-7xl">
-                Your Future, Focused.
-              </h1>
-              <h2 className="text-white/80 text-base font-normal leading-normal max-w-xl mx-auto sm:text-lg">
-                Master software engineering concepts through AI-powered interactive visualizations.
-                Transform complex CS topics into intuitive learning experiences.
-              </h2>
+            <p className="uppercase tracking-[0.3em] text-xs text-white/70">AI-Powered Education</p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-[-0.03em]">
+              Learn complex systems through cinematic visualizations.
+            </h1>
+            <p className="text-white/80 text-lg max-w-3xl mx-auto">
+              Visual Learning Platform turns dense documentation into living diagrams. Pair
+              step-by-step animations with AI tutoring, interactive controls, and persistent notes to
+              help teams, students, and candidates master technical narratives faster.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button
+                onClick={() => handleQuickStart("Binary Search Tree")}
+                disabled={isLoading}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full px-6 py-3 bg-[#1337ec] text-white font-semibold transition-transform",
+                  isLoading ? "opacity-75 cursor-not-allowed" : "hover:scale-105"
+                )}
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <PlayCircle className="w-5 h-5" />
+                )}
+                Launch Demo Visualizer
+              </button>
+              <button
+                onClick={onOpenPortfolioArchitect}
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 bg-white/10 border border-white/20 font-semibold hover:bg-white/20 transition-colors"
+              >
+                <Layers className="w-5 h-5" />
+                Explore Portfolio Architect
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
+              {[
+                { label: "Topics Visualized", value: "1,200+" },
+                { label: "Interactive Elements", value: "30+" },
+                { label: "Avg. Session Time", value: "12 min" },
+                { label: "AI Tutors", value: "GPT-4 & Claude" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-sm px-4 py-5"
+                >
+                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <p className="text-xs uppercase tracking-wide text-white/60 mt-1">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* Feature Grid */}
+          <section id="features" className="space-y-8">
+            <div className="text-center space-y-4">
+              <p className="text-[#7dd3fc] font-semibold tracking-[0.2em] text-xs uppercase">
+                Why It Works
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-bold">Product pillars that feel handcrafted</h2>
+              <p className="text-white/70 max-w-2xl mx-auto">
+                Every surface is designed for clarity—interactive visuals, contextual AI, and
+                frictionless note taking keep learners in flow.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {FEATURE_CARDS.map((card) => (
+                <div
+                  key={card.title}
+                  className="rounded-3xl border border-white/15 bg-white/5 backdrop-blur-sm p-6 flex flex-col gap-4"
+                >
+                  <card.icon className="w-10 h-10 text-[#7dd3fc]" />
+                  <div>
+                    <h3 className="text-xl font-semibold">{card.title}</h3>
+                    <p className="text-white/70 text-sm mt-2">{card.description}</p>
+                  </div>
+                  <ul className="text-sm text-white/80 space-y-2">
+                    {card.bullets.map((bullet) => (
+                      <li key={bullet} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-[#22d3ee] mt-0.5" />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Workflow */}
+          <section id="workflow" className="space-y-8">
+            <div className="flex flex-col gap-3 text-center">
+              <p className="text-[#c084fc] font-semibold tracking-[0.2em] text-xs uppercase">
+                Workflow
+              </p>
+              <h2 className="text-3xl font-bold">From prompt to polished lesson in minutes</h2>
+              <p className="text-white/70 max-w-2xl mx-auto">
+                Our FastAPI backend handles AI orchestration, while the React client renders
+                visualization canvases, playback controllers, and interactive tutors.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {WORKFLOW_STEPS.map((step, index) => (
+                <div
+                  key={step.title}
+                  className="rounded-2xl border border-white/15 bg-white/5 p-6 flex gap-4"
+                >
+                  <div className="text-[#22d3ee] text-3xl font-black leading-none">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-xl">{step.title}</h3>
+                    <p className="text-white/70 text-sm mt-2">{step.copy}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Assurance Row */}
+          <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              {
+                title: "Frictionless controls",
+                copy: "Playback, zoom, traversal switches, and keyboard support.",
+                icon: LineChart,
+              },
+              {
+                title: "Enterprise-friendly",
+                copy: "Secure API keys, rate limiting, CORS controls, and structured logs.",
+                icon: ShieldCheck,
+              },
+              {
+                title: "Always up-to-date",
+                copy: "Tailwind + Vite frontends, responsive design, and instant reloads.",
+                icon: Clock3,
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-white/15 bg-white/5 p-5 flex gap-4 items-start"
+              >
+                <item.icon className="w-8 h-8 text-[#7ee8fa]" />
+                <div>
+                  <h3 className="font-semibold text-lg">{item.title}</h3>
+                  <p className="text-white/70 text-sm mt-1">{item.copy}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {/* CTA Topics */}
+          <section id="topics" className="space-y-6">
+            <div className="flex flex-col items-center text-center gap-3">
+              <p className="text-[#fdba74] font-semibold tracking-[0.2em] text-xs uppercase">
+                Ready to explore?
+              </p>
+              <h2 className="text-3xl font-bold">Pick a topic and we will craft the lesson</h2>
+              <p className="text-white/70 max-w-2xl">
+                Choose a concept below to see how our visualization engine adapts to algorithms,
+                system design, networking, and AI topics.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {SAMPLE_TOPICS.map((sample) => (
+                <button
+                  key={sample}
+                  onClick={() => handleQuickStart(sample)}
+                  disabled={isLoading}
+                  className={cn(
+                    "w-full text-left rounded-2xl border border-white/15 bg-white/5 px-5 py-4 flex items-center justify-between",
+                    isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-white/10"
+                  )}
+                >
+                  <span className="font-semibold">{sample}</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              ))}
             </div>
 
-            {/* Search Input */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="w-full max-w-2xl mt-8"
-            >
-              <form onSubmit={handleSubmit} className="relative">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    placeholder="e.g., Binary Search Tree, Merge Sort, Load Balancer, TCP/IP Stack..."
-                    className="w-full px-4 py-4 pl-12 border-2 border-white/20 rounded-lg bg-black/30 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-[#1337ec] focus:border-[#1337ec] text-lg text-white placeholder-gray-400"
-                    disabled={isLoading}
-                  />
+            {error && (
+              <div className="p-4 bg-red-500/20 border border-red-500/40 rounded-xl flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-300 mt-1" />
+                <div>
+                  <p className="font-semibold text-red-200">Something went wrong</p>
+                  <p className="text-red-100 text-sm">{error}</p>
                 </div>
+              </div>
+            )}
 
-                <button
-                  type="submit"
-                  disabled={!topic.trim() || isLoading}
-                  className={cn(
-                    "w-full mt-4 flex items-center justify-center gap-2 h-12 px-5 bg-[#1337ec] text-white text-base font-bold leading-normal tracking-[0.015em] rounded-lg transition-transform",
-                    isLoading ? "opacity-75 cursor-not-allowed" : "hover:scale-105"
-                  )}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Generating Visualization...
-                    </>
-                  ) : (
-                    <>
-                      <Brain className="w-5 h-5" />
-                      Generate Visualization
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Error Display */}
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-start gap-3"
-                >
-                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-red-300">Oops! Something went wrong</p>
-                    <p className="text-red-200 text-sm mt-1">{error}</p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Loading Message */}
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-4 text-center text-white/80 text-sm"
-                >
-                  <p className="font-medium">This usually takes 5-15 seconds...</p>
-                  <p className="mt-1">
-                    Our AI is analyzing your topic and creating a perfect visualization
-                  </p>
-                </motion.div>
-              )}
-            </motion.div>
-          </motion.div>
+            {isLoading && (
+              <p className="text-center text-sm text-white/70">
+                <Loader2 className="inline w-4 h-4 mr-2 animate-spin" />
+                Generating your visualization experience...
+              </p>
+            )}
+          </section>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="flex flex-col gap-6 px-5 py-10 text-center w-full max-w-6xl mx-auto mt-auto">
+      <footer className="flex flex-col gap-6 px-5 py-10 text-center w-full max-w-6xl mx-auto mt-auto text-white/80">
         <div className="flex flex-wrap items-center justify-center gap-6 sm:justify-around">
           <a
             className="text-[#9da1b9] text-base font-normal leading-normal min-w-40 hover:text-white transition-colors"

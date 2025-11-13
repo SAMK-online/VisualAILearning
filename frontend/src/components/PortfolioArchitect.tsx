@@ -10,6 +10,229 @@ interface PortfolioArchitectProps {
   onBack?: () => void;
 }
 
+const FONT_EMBED_MAP: Record<Font, { href: string; family: string }> = {
+  inter: {
+    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap",
+    family: "'Inter', sans-serif",
+  },
+  lora: {
+    href: "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;700&display=swap",
+    family: "'Lora', serif",
+  },
+  "source-code-pro": {
+    href: "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap",
+    family: "'Source Code Pro', monospace",
+  },
+};
+
+const escapeHtml = (value?: string | null) =>
+  (value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const buildPortfolioHTML = (data: PortfolioData, themeId: Theme, font: Font) => {
+  const theme = THEME_OPTIONS.find((t) => t.id === themeId) || THEME_OPTIONS[0];
+  const fontEmbed = FONT_EMBED_MAP[font];
+  const heroImage =
+    data.imageUrl ||
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=60";
+
+  const skills = data.skills
+    .map(
+      (skill) =>
+        `<div class="skill-card">${escapeHtml(skill)}</div>`
+    )
+    .join("");
+
+  const experience = data.experience
+    .map(
+      (exp) => `
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>${escapeHtml(exp.role)}</h3>
+            <p class="muted">${escapeHtml(exp.company)}</p>
+          </div>
+          <span class="muted timeframe">${escapeHtml(exp.startDate)} – ${escapeHtml(exp.endDate)}</span>
+        </div>
+        <p class="muted">${escapeHtml(exp.description)}</p>
+      </div>`
+    )
+    .join("");
+
+  const projects = data.projects
+    .map(
+      (project) => `
+      <div class="card">
+        <h3>${escapeHtml(project.name)}</h3>
+        <p class="muted">${escapeHtml(project.description)}</p>
+        <div class="chip-row">
+          ${project.technologies
+            .map((tech) => `<span class="chip">${escapeHtml(tech)}</span>`)
+            .join("")}
+        </div>
+        <div class="actions">
+          ${project.demoUrl ? `<a href="${project.demoUrl}" target="_blank">Live Demo →</a>` : ""}
+          ${project.sourceUrl ? `<a href="${project.sourceUrl}" target="_blank">Source Code →</a>` : ""}
+        </div>
+      </div>`
+    )
+    .join("");
+
+  const links = data.links
+    .filter((link) => link.url)
+    .map(
+      (link) =>
+        `<a href="${link.url}" target="_blank">${escapeHtml(link.name)}</a>`
+    )
+    .join(" · ");
+
+  return `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${escapeHtml(data.name)} - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="${fontEmbed.href}" rel="stylesheet">
+    <style>
+      :root {
+        --primary: ${theme.primary};
+        --primary-dark: ${theme.primaryDarker ?? theme.primary};
+        --bg: ${theme.backgroundLight ?? "#f8fafc"};
+        --card: ${theme.cardLight ?? "#ffffff"};
+        --text: ${theme.isDark ? "#f8fafc" : "#0f172a"};
+        --muted: ${theme.isDark ? "rgba(226,232,240,0.7)" : "#475467"};
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ${fontEmbed.family};
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 32px;
+      }
+      .page {
+        max-width: 960px;
+        margin: 0 auto;
+        background: var(--bg);
+      }
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      header img {
+        width: 96px;
+        height: 96px;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 4px solid rgba(255,255,255,0.6);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      }
+      h1 { margin-bottom: 4px; font-size: 2.25rem; }
+      .muted { color: var(--muted); font-size: 0.95rem; }
+      section { margin-bottom: 32px; }
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .chip {
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: var(--primary);
+        color: #0f172a;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .skill-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      .skill-card {
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 14px 16px;
+        background: var(--card);
+        font-weight: 600;
+      }
+      .actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 16px;
+        font-weight: 600;
+      }
+      a { color: var(--primary-dark); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <img src="${heroImage}" alt="${escapeHtml(data.name)}" />
+        <h1>${escapeHtml(data.name)}</h1>
+        <p class="muted">${escapeHtml(data.title)}</p>
+        <p>${escapeHtml(data.summary)}</p>
+        <p class="muted">${links}</p>
+      </header>
+
+      ${
+        data.skills.length
+          ? `<section>
+              <h2>Skills & Tools</h2>
+              <div class="skill-grid">${skills}</div>
+            </section>`
+          : ""
+      }
+
+      ${
+        data.experience.length
+          ? `<section>
+              <h2>Experience</h2>
+              ${experience}
+            </section>`
+          : ""
+      }
+
+      ${
+        data.projects.length
+          ? `<section>
+              <h2>Projects</h2>
+              ${projects}
+            </section>`
+          : ""
+      }
+
+      <footer class="muted" style="text-align:center; margin-top:40px;">
+        <p>Ready to collaborate? <a href="mailto:${data.email}">${data.email}</a></p>
+        <p>© ${new Date().getFullYear()} ${escapeHtml(data.name)}</p>
+      </footer>
+    </div>
+  </body>
+  </html>`;
+};
+
 const PortfolioArchitect: React.FC<PortfolioArchitectProps> = ({ onBack }) => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
@@ -50,11 +273,22 @@ const PortfolioArchitect: React.FC<PortfolioArchitectProps> = ({ onBack }) => {
   
   const handleDownload = () => {
     if (!portfolioData) {
-        alert("Please generate a portfolio first.");
-        return;
+      alert("Please generate a portfolio first.");
+      return;
     }
-    // TODO: Implement HTML generation and download
-    alert("Download feature coming soon! Your portfolio preview is displayed below.");
+
+    const htmlContent = buildPortfolioHTML(portfolioData, theme, font);
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const safeName = portfolioData.name ? portfolioData.name.replace(/\s+/g, "_").toLowerCase() : "portfolio";
+
+    link.href = url;
+    link.download = `${safeName}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const themeForPreview: Theme = previewTheme || theme;

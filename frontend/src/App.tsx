@@ -30,7 +30,7 @@ function App() {
         const targetUrl = demoUrl.startsWith("http")
           ? demoUrl
           : `${API_BASE_URL}${demoUrl}`;
-        window.open(targetUrl, "_blank", "noopener,noreferrer");
+        window.location.href = targetUrl;
         return;
       }
 
