@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { PortfolioData, Theme, Font, THEME_OPTIONS } from '../types/portfolio';
+import type { PortfolioData, Theme, Font } from '../types/portfolio';
+import { THEME_OPTIONS } from '../types/portfolio';
 import { parseResume as parseResumeService } from '../services/api';
 import { fileToBase64 } from '../lib/portfolioUtils';
 import PortfolioPreview from './PortfolioPreview';

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { PortfolioData, Theme, Font, THEME_OPTIONS } from '../types/portfolio';
+import type { PortfolioData, Theme, Font } from '../types/portfolio';
+import { THEME_OPTIONS } from '../types/portfolio';
 
 interface PortfolioPreviewProps {
   data: PortfolioData | null;
