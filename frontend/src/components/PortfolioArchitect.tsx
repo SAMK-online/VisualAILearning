@@ -1,11 +1,16 @@
 import React, { useState, useCallback } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import type { PortfolioData, Theme, Font } from '../types/portfolio';
 import { THEME_OPTIONS } from '../types/portfolio';
 import { parseResume as parseResumeService } from '../services/api';
 import { fileToBase64 } from '../lib/portfolioUtils';
 import PortfolioPreview from './PortfolioPreview';
 
-const PortfolioArchitect: React.FC = () => {
+interface PortfolioArchitectProps {
+  onBack?: () => void;
+}
+
+const PortfolioArchitect: React.FC<PortfolioArchitectProps> = ({ onBack }) => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -58,6 +63,15 @@ const PortfolioArchitect: React.FC = () => {
   return (
     <div className={`min-h-screen bg-[#F0EBE3] text-[#3d405b] p-4 sm:p-6 lg:p-8 ${isPreviewDark ? 'dark' : ''}`}>
       <div className="max-w-7xl mx-auto">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-[#3d405b] hover:text-[#81b29a] transition-colors mb-6 group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-medium">Back to Home</span>
+          </button>
+        )}
         <header className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-[#81b29a] tracking-tight">Portfolio Architect AI</h1>
             <p className="mt-2 text-lg text-[#3d405b]/80">Your resume is the blueprint. Let's build your masterpiece.</p>

@@ -53,7 +53,7 @@ function App() {
           error={error}
         />
       ) : state === "portfolio-architect" ? (
-        <PortfolioArchitect />
+        <PortfolioArchitect onBack={handleBackToHome} />
       ) : visualizationData ? (
         <VisualizationViewer
           data={visualizationData}
