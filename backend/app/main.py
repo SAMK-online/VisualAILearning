@@ -348,20 +348,39 @@ async def parse_resume(request: Request, data: ResumeParseRequest):
         model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
         # Prompt for resume parsing
-        prompt = """You are an expert resume parser. Analyze the following resume file and extract the information into JSON format. Be accurate and complete. 
+        prompt = """You are an expert resume parser. Analyze the following resume file and extract the information into JSON format. Be accurate and complete.
+
+IMPORTANT: 
+- Never use null or None values
+- If information is missing, use empty strings "" or empty arrays []
+- All URLs must be complete valid URLs or empty strings
+- Ensure all required fields are present
 
 Extract:
-- name: Full name
-- title: Professional title
-- summary: Professional summary/objective
-- email: Email address
-- imageUrl: Profile picture URL if available, otherwise use a placeholder like 'https://picsum.photos/seed/portfolio/400/400'
-- links: Array of {name, url} for GitHub, LinkedIn, etc.
-- skills: Array of technical skills
+- name: Full name (required)
+- title: Professional title or job role (if missing, use "Professional")
+- summary: Professional summary/objective (if missing, use empty string)
+- email: Email address (if missing, use empty string)
+- imageUrl: Use 'https://picsum.photos/seed/portfolio/400/400'
+- links: Array of {name, url} for GitHub, LinkedIn, etc. If URL not found, use empty string for url
+- skills: Array of technical skills and technologies
 - experience: Array of {role, company, startDate, endDate, description}
 - projects: Array of {name, description, technologies, demoUrl, sourceUrl}
 
-Return ONLY valid JSON, no additional text."""
+Example structure:
+{
+  "name": "John Doe",
+  "title": "Software Engineer",
+  "summary": "Experienced developer...",
+  "email": "john@example.com",
+  "imageUrl": "https://picsum.photos/seed/portfolio/400/400",
+  "links": [{"name": "GitHub", "url": "https://github.com/johndoe"}],
+  "skills": ["Python", "React"],
+  "experience": [{"role": "Developer", "company": "Tech Co", "startDate": "Jan 2020", "endDate": "Present", "description": "Built apps"}],
+  "projects": [{"name": "Project", "description": "Cool project", "technologies": ["React"], "demoUrl": "", "sourceUrl": ""}]
+}
+
+Return ONLY valid JSON, no markdown formatting, no additional text."""
         
         # Call Gemini API
         response = model.generate_content([
@@ -379,6 +398,22 @@ Return ONLY valid JSON, no additional text."""
             json_text = json_text.strip()
         
         portfolio_data = json.loads(json_text)
+        
+        # Clean up None values to prevent validation errors
+        if portfolio_data.get('title') is None:
+            portfolio_data['title'] = 'Professional'
+        if portfolio_data.get('summary') is None:
+            portfolio_data['summary'] = ''
+        if portfolio_data.get('email') is None:
+            portfolio_data['email'] = ''
+        if portfolio_data.get('imageUrl') is None:
+            portfolio_data['imageUrl'] = 'https://picsum.photos/seed/portfolio/400/400'
+        
+        # Clean up links with None URLs
+        if 'links' in portfolio_data:
+            for link in portfolio_data['links']:
+                if link.get('url') is None:
+                    link['url'] = ''
         
         return PortfolioDataResponse(**portfolio_data)
         

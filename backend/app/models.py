@@ -110,7 +110,7 @@ class PortfolioLink(BaseModel):
     """Portfolio social link"""
     
     name: str = Field(..., description="Link name (e.g., GitHub, LinkedIn)")
-    url: str = Field(..., description="URL of the link")
+    url: str = Field(default="", description="URL of the link")
 
 
 class PortfolioExperience(BaseModel):
@@ -137,11 +137,11 @@ class PortfolioDataResponse(BaseModel):
     """Response model for parsed portfolio data"""
     
     name: str = Field(..., description="Candidate's full name")
-    title: str = Field(..., description="Professional title")
-    summary: str = Field(..., description="Professional summary")
-    email: str = Field(..., description="Email address")
+    title: str = Field(default="Professional", description="Professional title")
+    summary: str = Field(default="", description="Professional summary")
+    email: str = Field(default="", description="Email address")
     imageUrl: Optional[str] = Field(None, description="Profile picture URL")
-    links: List[PortfolioLink] = Field(..., description="Social/professional links")
-    skills: List[str] = Field(..., description="Technical skills")
-    experience: List[PortfolioExperience] = Field(..., description="Work experience")
-    projects: List[PortfolioProject] = Field(..., description="Projects")
+    links: List[PortfolioLink] = Field(default_factory=list, description="Social/professional links")
+    skills: List[str] = Field(default_factory=list, description="Technical skills")
+    experience: List[PortfolioExperience] = Field(default_factory=list, description="Work experience")
+    projects: List[PortfolioProject] = Field(default_factory=list, description="Projects")
